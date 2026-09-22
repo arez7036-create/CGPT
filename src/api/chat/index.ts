@@ -1,10 +1,10 @@
+// @deprecated This file is dead code. The actual chat endpoint is in server.ts.
+// All provider imports below are unused since server.ts has its own implementations.
 import type { IncomingMessage, ServerResponse } from 'http';
-import busboy from 'busboy';
 import { Readable } from 'stream';
 
 // Import provider handlers
 import { sendOpenAICompatibleRequest } from '../../services/api/chat/providers/openai-compatible/index.js';
-import { sendGroqRequest } from '../../services/api/chat/providers/groq/index.js';
 import { sendClaudeRequest } from '../../services/api/chat/providers/anthropic/index.js';
 import { sendGoogleRequest } from '../../services/api/chat/providers/google/index.js';
 import { sendOpenRouterRequest } from '../../services/api/chat/providers/openrouter/index.js';

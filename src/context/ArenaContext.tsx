@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useMemo } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Settings, Message, Conversation } from '../types'; // Assuming types are in ../types
+import { Settings, Message, Conversation } from '../types';
 import { sendChatRequest } from "@/services/apiService";
-import { streamChatResponse } from "@/lib/utils"; // Assuming api utils are in ../utils/api
-import { useToast } from '@/components/ui/use-toast'; // Assuming toast is used for notifications
+import { streamChatResponse } from "@/lib/utils";
+import { useToast } from '@/hooks/use-toast';
 
 // Define the shape of the ArenaContext
 interface ArenaContextType {
@@ -28,7 +27,7 @@ interface ArenaProviderProps {
 }
 
 // Generate a unique ID for messages and conversations
-const generateId = () => uuidv4();
+const generateId = () => crypto.randomUUID();
 
 // ArenaProvider component
 export const ArenaProvider: React.FC<ArenaProviderProps> = ({ children }) => {
@@ -167,7 +166,7 @@ export const ArenaProvider: React.FC<ArenaProviderProps> = ({ children }) => {
               );
           }
         } else {
-          const nonStreamResponse = response as any; // Adjust type as per actual API response structure
+          const nonStreamResponse = response as { choices?: { message?: { content?: string } }[] };
           const responseContent = nonStreamResponse.choices?.[0]?.message?.content || `No response from ${currentModelSettings.model}`;
           const tokenCount = responseContent.split(' ').length; // Basic token count
 
@@ -239,20 +238,12 @@ export const ArenaProvider: React.FC<ArenaProviderProps> = ({ children }) => {
     setArenaSettings,
     isArenaLoading,
     sendArenaMessage,
-    // Add other functions and state setters here
-    // e.g., createNewArenaConversation, selectArenaConversation
   }), [
-    arenaConversations,
-    setArenaConversations,
-    currentArenaConversationId,
-    setCurrentArenaConversationId,
-    arenaSettings,
-    setArenaSettings,
     arenaConversations,
     currentArenaConversationId,
     arenaSettings,
     isArenaLoading,
-    sendArenaMessage
+    sendArenaMessage,
   ]);
 
   return <ArenaContext.Provider value={contextValue}>{children}</ArenaContext.Provider>;
