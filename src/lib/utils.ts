@@ -52,15 +52,6 @@ export const getDefaultSettings = (): Omit<Settings, 'providerA' | 'modelA' | 't
   };
 };
 
-export const getDefaultArenaSettings = (): Pick<Settings, 'providerA' | 'modelA' | 'temperatureA' | 'providerB' | 'modelB' | 'temperatureB'> => ({
-  providerA: 'openrouter',
-  modelA: 'google/gemini-2.5-pro-preview-06-05',
-  temperatureA: 0.7,
-  providerB: 'openrouter',
-  modelB: 'openai/o4-mini-2025-04-16',
-  temperatureB: 0.7,
-});
-
 export function truncate(str: string, length: number): string {
   if (str.length <= length) return str;
   return str.slice(0, length) + '...';

@@ -8,30 +8,19 @@ import { useToast } from "@/hooks/use-toast";
 import { SendHorizontal, Square } from "lucide-react";
 import { ChatResponse } from "@/types";
 import { generateId } from "@/lib/utils";
-import { AudioRecordButton } from "@/components/AudioRecordButton";
 
-// Arena Mode Configuration
-const CHAT_ARENA_ENABLED = import.meta.env.VITE_CHAT_ARENA_ENABLED === 'true';
-
-interface MessageInputProps {
-  className?: string;
-  arenaMode?: boolean; // Add arenaMode prop
-}
-
-export function MessageInput({ className, arenaMode }: MessageInputProps) { // Destructure arenaMode
+export function MessageInput() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isReasoning, setIsReasoning] = useState(false);
-  const { 
-    addMessage, 
-    settings, 
-    conversations, 
-    currentConversationId, 
+  const {
+    addMessage,
+    settings,
+    conversations,
+    currentConversationId,
     setConversations,
     isStreaming,
     startStreaming,
-    stopStreaming,
-    isInputDisabled
+    stopStreaming
   } = useChat();
   const { toast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -50,111 +39,90 @@ export function MessageInput({ className, arenaMode }: MessageInputProps) { // D
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!message.trim() || isSubmitting || !currentConversationId) return;
-    
-    // Add user message
+
     addMessage("user", message);
-    
-    // Prepare for API call
+
     setIsSubmitting(true);
-    setIsReasoning(true);
     setMessage("");
-    
+
     try {
-      // Prepare messages array with system prompt if available
       const messages = [];
-      
-      // Add system prompt if it exists
+
       if (settings.systemPrompt && settings.systemPrompt.trim() !== '') {
         messages.push({ role: "system", content: settings.systemPrompt });
       }
-      
-      // Add conversation history
+
       messages.push(
         ...(currentConversation?.messages.map(m => ({
           role: m.role,
           content: m.content
         })) || [])
       );
-      
-      // Add current user message
+
       messages.push({ role: "user", content: message });
 
-      
       const chatRequest = {
         messages,
         model: settings.model,
         temperature: settings.temperature,
         stream: settings.streamEnabled
       };
-      
-      // Send request with proper typing
+
       const response = await sendChatRequest(settings.provider, chatRequest);
-      
+
       if (settings.streamEnabled && response instanceof ReadableStream) {
-        // Handle streaming response
         let responseContent = '';
-        
-        // Create a new assistant message
+
         const assistantMessage = {
           id: generateId(),
           role: 'assistant' as const,
           content: '',
           createdAt: new Date(),
-          tokenCount: 0 // Initialize token count
+          tokenCount: 0
         };
-        
-        // Add the empty message that will be updated with streaming content
-        setConversations(prev => 
-          prev.map(conv => 
-            conv.id === currentConversationId 
+
+        setConversations(prev =>
+          prev.map(conv =>
+            conv.id === currentConversationId
               ? {
                   ...conv,
                   messages: [...conv.messages, assistantMessage],
                   updatedAt: new Date()
-                } 
+                }
               : conv
           )
         );
-        
-        // Start streaming and get the controller for cancellation
+
         const controller = startStreaming();
-        
+
         try {
-          // Stream the response and update the message
           const stream = streamChatResponse(response);
-          
+
           for await (const chunk of stream) {
-            // Check if streaming was cancelled
             if (controller.signal.aborted) {
               break;
             }
-            
+
             responseContent += chunk;
-            
-            // Update the message with the current content and recalculate token count
-            const words = responseContent
-              .trim()
-              .split(/\s+|[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/) 
-              .filter(word => word.length > 0);
-            
-            setConversations(prev => 
-              prev.map(conv => 
-                conv.id === currentConversationId 
+
+            setConversations(prev =>
+              prev.map(conv =>
+                conv.id === currentConversationId
                   ? {
                       ...conv,
-                      messages: conv.messages.map(msg => 
+                      messages: conv.messages.map(msg =>
                         msg.id === assistantMessage.id
-                          ? { 
-                              ...msg, 
+                          ? {
+                              ...msg,
                               content: responseContent,
-                              tokenCount: words.length 
+                              tokenCount: responseContent.trim().split(/\s+/).length
                             }
                           : msg
                       ),
                       updatedAt: new Date()
-                    } 
+                    }
                   : conv
               )
             );
@@ -163,15 +131,11 @@ export function MessageInput({ className, arenaMode }: MessageInputProps) { // D
           if (error.name !== 'AbortError') {
             throw error;
           }
-          // If it's an AbortError, we just stop the streaming gracefully
           console.log('Streaming was cancelled by user');
         }
       } else if (!settings.streamEnabled && !(response instanceof ReadableStream)) {
-        // Handle non-streaming response
         const nonStreamResponse = response as ChatResponse;
         const responseContent = nonStreamResponse.choices[0]?.message?.content || "No response from AI";
-        
-        // Add the complete response as a new message
         addMessage("assistant", responseContent);
       }
     } catch (error) {
@@ -181,75 +145,58 @@ export function MessageInput({ className, arenaMode }: MessageInputProps) { // D
         description: error instanceof Error ? error.message : "Failed to send message",
         variant: "destructive",
       });
-      
-      // Add an error message
       addMessage("assistant", "Sorry, I encountered an error. Please try again.");
     } finally {
       setIsSubmitting(false);
-      setIsReasoning(false);
-      stopStreaming(); // Ensure streaming state is reset
+      stopStreaming();
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t p-4 bg-background/80 backdrop-blur-sm">
-      <div className="relative flex items-center">
-        <Textarea
-          ref={textareaRef}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmit(e);
-            }
-          }}
-          placeholder={isReasoning ? "AI is reasoning..." : isInputDisabled ? "Processing voice message..." : "Type your message..."}
-          className="pr-14 min-h-[60px] max-h-[200px] resize-none"
-          disabled={isSubmitting || isReasoning || isInputDisabled}
+    <div className="border-t bg-background/80 backdrop-blur-sm">
+      <div className="container max-w-4xl mx-auto p-3">
+        <form onSubmit={handleSubmit} className="relative">
+          <Textarea
+            ref={textareaRef}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
+          placeholder="Type a message..."
+          className="min-h-[50px] max-h-[200px] resize-none border-0 bg-gray-100 dark:bg-[#374151] focus-visible:ring-0 focus-visible:ring-offset-0 pr-16 rounded-2xl"
+          disabled={isSubmitting}
+          rows={1}
+          autoFocus
         />
-        {isReasoning ? (
-          <div className="absolute right-2 flex items-center justify-center">
-            {isStreaming ? (
-              <Button 
-                type="button" 
-                size="icon" 
-                variant="destructive"
-                className="h-8 w-8" 
-                onClick={() => stopStreaming()}
-                title="Stop generation"
+          <div className="absolute right-2 top-2 flex items-center space-x-2">
+            {isSubmitting && isStreaming ? (
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-7 w-7 rounded-full"
+                onClick={stopStreaming}
               >
-                <Square className="h-4 w-4" />
-                <span className="sr-only">Stop</span>
+                <Square className="h-3 w-3" />
               </Button>
             ) : (
-              <div className="h-8 w-8 flex items-center justify-center">
-                <div className="animate-pulse h-4 w-4 bg-primary rounded-full"></div>
-              </div>
+              <Button
+                type="submit"
+                size="icon"
+                variant="ghost"
+                className="h-7 w-7 rounded-full"
+                disabled={isSubmitting || !message.trim()}
+              >
+                <SendHorizontal className="h-4 w-4" />
+              </Button>
             )}
           </div>
-        ) : (
-          <div className="absolute right-2 flex items-center space-x-2">
-            <AudioRecordButton />
-            <Button
-              type="submit"
-              size="icon"
-              disabled={isSubmitting || isReasoning || !message.trim() || isInputDisabled}
-            >
-              <SendHorizontal className="h-5 w-5" />
-              <span className="sr-only">Send</span>
-            </Button>
-          </div>
-        )}
+        </form>
       </div>
-      
-      <div className="flex justify-center items-center mt-2">
-        {!arenaMode && (
-          <div className="text-xs text-muted-foreground">
-            AI Powered by {`${settings.provider}/${settings.model}`}
-          </div>
-        )}
-      </div>
-    </form>
+    </div>
   );
 }
