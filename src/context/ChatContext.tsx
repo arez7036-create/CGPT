@@ -204,6 +204,14 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, [createNewConversation, toast]);
 
+  const renameConversation = useCallback((id: string, newTitle: string) => {
+    setConversations(prev =>
+      prev.map(conv =>
+        conv.id === id ? { ...conv, title: newTitle } : conv
+      )
+    );
+  }, []);
+
   const startStreaming = useCallback(() => {
     const controller = new AbortController();
     setStreamController(controller);
@@ -405,7 +413,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         variant: "destructive",
       });
 
-      addMessage("assistant", "Sorry, I encountered an error. Please try again.");
+      addMessage({ role: 'assistant', content: "Sorry, I encountered an error. Please try again." });
     } finally {
       setIsLoading(false);
       stopStreaming();
