@@ -25,7 +25,7 @@ RUN npm ci --legacy-peer-deps
 
 COPY . .
 
-RUN mkdir -p data/audio data/uploads && npx prisma generate && npm run build
+RUN mkdir -p data/audio data/uploads && npm run build
 
 EXPOSE 4173 4174
 
