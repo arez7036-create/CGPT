@@ -27,7 +27,6 @@ DATABASE_URL="file:./db/dev.db"
 DEFAULT_SYSTEM_PROMPT="You are CGPT, a helpful AI assistant. You help users with their questions and tasks."
 DEFAULT_WELCOME_MESSAGE="Hello! I'm CGPT, your AI assistant. How can I help you today?"
 EOF
-fi
 
 # 2. Start Ollama container
 echo "Starting Ollama..."
