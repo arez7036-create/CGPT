@@ -66,15 +66,15 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       if (savedConversations) {
         try {
           const parsed = JSON.parse(savedConversations);
-          const formattedConversations = parsed.map((conv: any) => ({
-            ...conv,
-            createdAt: new Date(conv.createdAt),
-            updatedAt: new Date(conv.updatedAt),
-            messages: conv.messages.map((msg: any) => ({
-              ...msg,
-              createdAt: new Date(msg.createdAt)
-            }))
-          }));
+           const formattedConversations = parsed.map((conv: Record<string, unknown>) => ({
+             ...conv,
+             createdAt: new Date(conv.createdAt as string),
+             updatedAt: new Date(conv.updatedAt as string),
+             messages: (conv.messages as Array<Record<string, unknown>>).map((msg) => ({
+               ...msg,
+               createdAt: new Date(msg.createdAt as string)
+             }))
+           }));
           setConversations(formattedConversations);
 
           if (formattedConversations.length > 0) {
