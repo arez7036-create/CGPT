@@ -8,7 +8,6 @@ import { sendGroqRequest } from '../../services/api/chat/providers/groq/index.js
 import { sendClaudeRequest } from '../../services/api/chat/providers/anthropic/index.js';
 import { sendGoogleRequest } from '../../services/api/chat/providers/google/index.js';
 import { sendOpenRouterRequest } from '../../services/api/chat/providers/openrouter/index.js';
-import { sendNeuraRequest } from '../../services/api/chat/providers/neurarouter/index.js';
 import { sendFlowiseRequest } from '../../services/api/chat/providers/flowise/index.js';
 
 interface ChatRequest {
@@ -36,8 +35,6 @@ function getServerApiKey(provider: string): string {
       return process.env.OPENROUTER_API_KEY || '';
     case 'flowise':
       return process.env.FLOWISE_API_KEY || '';
-    case 'neurarouter':
-      return process.env.NEURA_ROUTER_API_KEY || '';
     case 'google':
       return process.env.GOOGLE_API_KEY || '';
     default:
@@ -57,8 +54,6 @@ function getServerApiUrl(provider: string): string {
       return process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
     case 'flowise':
       return process.env.FLOWISE_API_URL || 'http://localhost:3000/api/v1/prediction';
-    case 'neurarouter':
-      return process.env.NEURA_ROUTER_API_URL || 'https://api.meetneura.ai/v1/chat/completions/router';
     case 'google':
       return process.env.GOOGLE_API_URL || 'https://generativelanguage.googleapis.com';
     default:
@@ -111,9 +106,6 @@ export async function handleChatRequest(req: IncomingMessage, res: ServerRespons
         switch (provider) {
           case 'flowise':
             response = await sendFlowiseRequest(apiUrl, apiKey, chatRequest);
-            break;
-          case 'neurarouter':
-            response = await sendNeuraRequest(apiUrl, apiKey, chatRequest);
             break;
           case 'claude':
             response = await sendClaudeRequest(apiUrl, apiKey, chatRequest);

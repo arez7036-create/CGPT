@@ -2,9 +2,9 @@ import { ChatRequest, ChatResponse } from '@/types';
 import { generateId } from "@/lib/utils";
 
 /**
- * Send a request to Neura API
+ * Send a request to the Router API
  */
-export async function sendNeuraRequest(
+export async function sendRouterRequest(
   apiUrl: string,
   apiKey: string,
   chatRequest: ChatRequest
@@ -21,9 +21,9 @@ export async function sendNeuraRequest(
         role: msg.role === 'system' ? 'user' : msg.role,
         content: msg.content,
       })),
-      model: chatRequest.model || 'neurarouter-default',
+      model: chatRequest.model || 'router-default',
       temperature: chatRequest.temperature,
-      stream: true, // Always stream from API
+      stream: true,
     };
 
     const response = await fetch(apiUrl, {
@@ -34,13 +34,12 @@ export async function sendNeuraRequest(
 
     if (!response.ok) {
       throw new Error(
-        `Neura API request failed with status ${response.status}: ${response.statusText}`
+        `Router API request failed with status ${response.status}: ${response.statusText}`
       );
     }
 
     // For UI streaming requests, return the stream directly
     if (chatRequest.stream) {
-      // Create a ReadableStream that processes chunks as they arrive
       return new ReadableStream({
         async start(controller) {
           const reader = response.body.getReader();
@@ -51,16 +50,13 @@ export async function sendNeuraRequest(
               break;
             }
 
-            // Enqueue the Uint8Array chunk directly
             controller.enqueue(value);
           }
 
-          // Signal that the stream is complete
           controller.close();
         },
       });
     } else {
-      // For non-streaming requests, collect all chunks and return a complete response
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let fullContent = '';
@@ -80,12 +76,10 @@ export async function sendNeuraRequest(
           
           for (const line of lines) {
             try {
-              // Skip ping events, [DONE] markers, and events
               if (line.includes('event: ping') || 
                   line.includes('[DONE]') || 
                   line.startsWith('event:')) continue;
               
-              // Extract the data part
               if (!line.startsWith('data:')) continue;
               
               const trimmedLine = line.startsWith('data: ') ? line.slice(6) : line;
@@ -93,16 +87,13 @@ export async function sendNeuraRequest(
               
               const data = JSON.parse(trimmedLine);
               
-              // Handle Neura format
               if (data.chunk !== undefined) {
                 fullContent += data.chunk;
               }
-              // Handle OpenAI format
               else if (data.choices && data.choices[0]?.delta?.content) {
                 fullContent += data.choices[0].delta.content;
               }
             } catch (e) {
-              // Skip invalid JSON lines
               console.warn('Skipping invalid JSON in stream:', line);
             }
           }
@@ -111,7 +102,6 @@ export async function sendNeuraRequest(
         reader.releaseLock();
       }
       
-      // Return a complete response with the accumulated content
       return {
         id: generateId(),
         choices: [
@@ -127,7 +117,7 @@ export async function sendNeuraRequest(
       };
     }
   } catch (error) {
-    console.error('Error in Neura API request:', error);
+    console.error('Error in Router API request:', error);
     throw error;
   }
 }

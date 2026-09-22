@@ -138,7 +138,7 @@ export async function sendFlowiseRequest(
     
     // Check if the error response contains HTML (indicating we hit the UI instead of API)
     if (error.message && (error.message.includes('<!DOCTYPE html>') || error.message.includes('<html'))) {
-      throw new Error('Received HTML instead of JSON. Make sure your Flowise API URL points to the API endpoint, not the UI. The URL should be in format "https://bots.meetneura.ai/api/v1/prediction/" without including the chatflow ID.');
+      throw new Error('Received HTML instead of JSON. Make sure your Flowise API URL points to the API endpoint, not the UI. The URL should be in format "https://your-flowise-instance.com/api/v1/prediction/" without including the chatflow ID.');
     }
     
     throw error;

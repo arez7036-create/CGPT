@@ -196,47 +196,9 @@ export default function ChatPage() {
           
           {/* Footer */}
           <footer className="py-2 px-4 text-center text-sm text-muted-foreground border-t">
-            {arenaMode ? (
-              <div className="flex flex-col items-center">
-                <div className="flex justify-center items-center space-x-4">
-                  <span>Model A: {settings.modelA || 'Not Selected'}</span>
-                  <span>Model B: {settings.modelB || 'Not Selected'}</span>
-                </div>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <Button size="sm" variant="ghost" asChild>
-                    <a href="https://github.com/adolfousier/neura-spark-listener-chatbot-ui" target="_blank" rel="noopener noreferrer" className="text-xs">
-                      ⭐ Star
-                    </a>
-                  </Button>
-                  <a 
-                    href="https://meetneura.ai" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Powered by Neura AI
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center gap-2">
-                  <Button size="sm" variant="ghost" asChild>
-                    <a href="https://github.com/adolfousier/neura-spark-listener-chatbot-ui" target="_blank" rel="noopener noreferrer" className="text-xs">
-                      ⭐ Star
-                    </a>
-                  </Button>
-                  <a 
-                    href="https://meetneura.ai" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Powered by Neura AI
-                  </a>
-                </div>
-              </div>
-            )}
+            <div className="flex flex-col items-center">
+              <span>CGPT - ChatGPT-like AI Chat Platform</span>
+            </div>
           </footer>
         </main>
       </div>

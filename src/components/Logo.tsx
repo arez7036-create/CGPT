@@ -14,8 +14,8 @@ export function Logo({ className, size = "md" }: LogoProps) {
   };
 
   return (
-    <div className={cn("relative rounded-full overflow-hidden", sizeClasses[size], className)}>
-      <img src="/title-avatar.png" alt="Logo" className="w-full h-full object-cover" />
+    <div className={cn("relative rounded-full overflow-hidden bg-[#10a37f] flex items-center justify-center", sizeClasses[size], className)}>
+      <img src="/cgpt-logo.svg" alt="CGPT" className="w-full h-full object-contain p-1" />
     </div>
   );
 }

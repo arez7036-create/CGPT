@@ -27,7 +27,7 @@ const upload = multer({
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:4173', 'http://localhost:3000', 'http://localhost:5173', 'https://opensource-ai-chatbot.meetneura.ai'],
+  origin: ['http://localhost:4173', 'http://localhost:3000', 'http://localhost:5173', 'https://cgpt-chat.com', 'https://www.cgpt-chat.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -69,10 +69,8 @@ const getApiKey = (provider: string): string | null => {
       return process.env.CLAUDE_API_KEY || null;
     case 'google':
       return process.env.GOOGLE_API_KEY || null;
-    case 'openrouter':
+     case 'openrouter':
       return process.env.OPENROUTER_API_KEY || null;
-    case 'neurarouter':
-      return process.env.NEURA_ROUTER_API_KEY || null;
     case 'flowise':
       return process.env.FLOWISE_API_KEY || null;
     default:
@@ -219,30 +217,6 @@ app.post('/api/chat/completions', async (req, res) => {
         }
         
         response = await openRouterResponse.json();
-        break;
-      }
-
-      case 'neurarouter': {
-        const neuraResponse = await fetch(process.env.NEURA_ROUTER_API_URL || 'https://api.meetneura.ai/v1/router/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: model || 'gpt-3.5-turbo',
-            messages,
-            temperature,
-            stream,
-            max_tokens
-          })
-        });
-        
-        if (!neuraResponse.ok) {
-          throw new Error(`Neura Router API error: ${neuraResponse.statusText}`);
-        }
-        
-        response = await neuraResponse.json();
         break;
       }
 
@@ -619,15 +593,15 @@ if (!fs.existsSync('data/uploads')) {
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Secure API server running on http://localhost:${PORT}`);
+  console.log(`🚀 CGPT API server running on http://localhost:${PORT}`);
   console.log(`📋 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔒 API keys are now server-side only - no browser exposure!`);
+  console.log(`🔒 API keys are server-side only - no browser exposure!`);
   console.log(`💬 Chat endpoint: http://localhost:${PORT}/api/chat/completions`);
   console.log(`🗄️  Database endpoints: http://localhost:${PORT}/api/database/conversations`);
   console.log(`🔊 TTS endpoint: http://localhost:${PORT}/api/tts`);
   console.log(`🎤 STT endpoint: http://localhost:${PORT}/api/stt`);
   console.log(`☁️  Storage endpoint: http://localhost:${PORT}/api/storage/upload`);
-  console.log(`✨ All services secured and ready!`);
+  console.log(`✨ All CGPT services secured and ready!`);
 });
 
 export default app;

@@ -501,7 +501,7 @@ export default defineConfig(({ mode }) => {
     proxy: {
       // Add this new endpoint for tokenization
       '/api/tokenize': {
-        target: 'https://opensource-ai-chatbot.meetneura.ai',
+        target: 'http://localhost:4174',
         changeOrigin: true,
         rewrite: (path) => path,
       },
@@ -545,7 +545,7 @@ export default defineConfig(({ mode }) => {
     allowedHosts: [
       "localhost",
       "127.0.0.1",
-      "opensource-ai-chatbot.meetneura.ai"
+      "cgpt-chat.com"
     ]
   }
   };

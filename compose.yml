@@ -1,9 +1,9 @@
 services:
-  neura_spark_listener:
+  cgpt:
     build:
       context: .
       dockerfile: dockerfile
-    image: meetneuraai/neura-open-source-ui:latest
+    image: cgpt-chat:latest
     container_name: ${CONTAINER_NAME}
     ports:
       - "4173:4173"  # Frontend client port
@@ -18,7 +18,6 @@ services:
       - CLAUDE_API_KEY=${CLAUDE_API_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - NEURA_ROUTER_API_KEY=${NEURA_ROUTER_API_KEY}
       - FLOWISE_API_KEY=${FLOWISE_API_KEY}
       
       # Server-side API URLs
@@ -29,7 +28,6 @@ services:
       - CLAUDE_API_URL=${CLAUDE_API_URL}
       - GOOGLE_API_URL=${GOOGLE_API_URL}
       - OPENROUTER_API_URL=${OPENROUTER_API_URL}
-      - NEURA_ROUTER_API_URL=${NEURA_ROUTER_API_URL}
       - FLOWISE_API_URL=${FLOWISE_API_URL}
       
       # Server-side provider configs
@@ -63,8 +61,6 @@ services:
     volumes:
       - ./public:/app/public
       - ./data/audio:/app/data/audio
-      #- ./prisma:/app/prisma
-      #- ./prisma/dev.db:/app/prisma/dev.db
       - ./prisma/db:/app/prisma/db
     logging:
       driver: "json-file"

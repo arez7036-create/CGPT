@@ -1,4 +1,4 @@
-export type Provider = 'groq' | 'openai' | 'flowise' | 'openrouter' | 'neurarouter' | 'anthropic' | 'google';
+export type Provider = 'groq' | 'openai' | 'flowise' | 'openrouter' | 'anthropic' | 'google';
 
 export type Template = 'minimal' | 'vibrant' | 'elegant';
 

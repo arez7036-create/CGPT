@@ -120,28 +120,6 @@ export function SettingsDialog({ arenaMode }: { arenaMode: boolean }) {
 
   const renderModelOptions = (provider: Provider) => {
     switch (provider) {
-      case 'neurarouter':
-        return (
-          <>
-            <SelectItem value="google/gemini-2.5-pro-preview-06-05">Gemini 2.5 Pro</SelectItem>                    
-            <SelectItem value="google/gemini-2.5-flash-preview-05-20">Gemini 2.5 Flash</SelectItem>
-            <SelectItem value="openai/o4-mini-2025-04-16">OpenAI o4-mini</SelectItem>
-            <SelectItem value="openai/gpt-4.1-2025-04-14">GPT-4.1</SelectItem>
-            <SelectItem value="openai/gpt-image-1">GPT-image-1</SelectItem>
-            <SelectItem value="google/imagen-4.0-generate-preview-05-20">Imagen 4.0 (Image Generation)</SelectItem>
-            <SelectItem value="google/imagen-4.0-ultra-generate-exp-05-20">Imagen 4.0 Ultra(Image Generation)</SelectItem>
-            <SelectItem value="openrouter/deepseek-r1-0528:free">DeepSeek R1 0528</SelectItem>
-            <SelectItem value="openrouter/nvidia/llama-3.1-nemotron-ultra-253b-v1:free">Nvidia Nemotron Ultra 256b</SelectItem>
-            <SelectItem value="groq/meta-llama/llama-4-maverick-17b-128e-instruct">Llama 4 Maverick</SelectItem>
-            <SelectItem value="groq/meta-llama/llama-4-scout-17b-16e-instruct">LLama 4 Scout</SelectItem>
-            <SelectItem value="groq/compound-beta">Groq Compound Beta Agentic Model</SelectItem>
-            <SelectItem value="anthropic/claude-sonnet-4-20250514">Sonnet 4</SelectItem>
-            <SelectItem value="anthropic/claude-opus-4-20250514">Opus 4</SelectItem>
-            <SelectItem value="anthropic/claude-3-7-sonnet-latest">Sonnet 3.7</SelectItem>
-            <SelectItem value="anthropic/claude-3-7-opus-latest">Opus 3.7</SelectItem>
-            <SelectItem value="anthropic/claude-3-5-haiku-latest">Haiku 3.5</SelectItem>
-          </>
-        );
       case 'groq':
         return (
           <>
@@ -243,8 +221,7 @@ export function SettingsDialog({ arenaMode }: { arenaMode: boolean }) {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="groq">Groq</SelectItem>
-                          <SelectItem value="neurarouter">Neura Router</SelectItem>
-                          <SelectItem value="openrouter">Open Router</SelectItem>
+                          <SelectItem value="openrouter">OpenRouter</SelectItem>
                           <SelectItem value="google">Google</SelectItem>
                           <SelectItem value="flowise">Flowise</SelectItem>
                           <SelectItem value="claude">Anthropic</SelectItem>
@@ -308,8 +285,7 @@ export function SettingsDialog({ arenaMode }: { arenaMode: boolean }) {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="groq">Groq</SelectItem>
-                          <SelectItem value="neurarouter">Neura Router</SelectItem>
-                          <SelectItem value="openrouter">Open Router</SelectItem>
+                          <SelectItem value="openrouter">OpenRouter</SelectItem>
                           <SelectItem value="google">Google</SelectItem>
                           <SelectItem value="flowise">Flowise</SelectItem>
                           <SelectItem value="claude">Anthropic</SelectItem>
@@ -465,8 +441,7 @@ export function SettingsDialog({ arenaMode }: { arenaMode: boolean }) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="groq">Groq</SelectItem>
-                    <SelectItem value="neurarouter">Neura Router</SelectItem>
-                    <SelectItem value="openrouter">Open Router</SelectItem>
+                    <SelectItem value="openrouter">OpenRouter</SelectItem>
                     <SelectItem value="google">Google</SelectItem>
                     <SelectItem value="flowise">Flowise</SelectItem>
                     <SelectItem value="claude">Anthropic</SelectItem>

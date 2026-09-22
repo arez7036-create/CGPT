@@ -22,7 +22,7 @@ export function formatDate(date: Date): string {
 
 export function getProviderFromEnv(): Provider {
   const provider = import.meta.env.VITE_BACKEND_SERVICE_PROVIDER?.toLowerCase() as Provider;
-  return ['claude', 'openai', 'flowise', 'openrouter', 'neurarouter', 'google'].includes(provider) ? provider : 'groq';
+  return ['claude', 'openai', 'flowise', 'openrouter', 'google'].includes(provider) ? provider : 'groq';
 }
 
 export const getDefaultSettings = (): Omit<Settings, 'providerA' | 'modelA' | 'temperatureA' | 'providerB' | 'modelB' | 'temperatureB'> => {
@@ -40,20 +40,20 @@ export const getDefaultSettings = (): Omit<Settings, 'providerA' | 'modelA' | 't
     streamEnabled: import.meta.env.VITE_STREAM_ENABLED !== 'false',
     reasoningFormat: import.meta.env.VITE_REASONING_FORMAT || 'parsed',
     template: 'minimal',
-    darkMode: false,
-    systemPrompt: import.meta.env.DEFAULT_SYSTEM_PROMPT || '',
+    darkMode: true,
+    systemPrompt: import.meta.env.DEFAULT_SYSTEM_PROMPT || "You are CGPT, a helpful AI assistant. You help users with their questions and tasks.",
     contextWindowSize: 5,
-    webSearchEnabled: false, // Web search disabled by default
+    webSearchEnabled: false,
     audioResponseEnabled: false,
   };
 };
 
 export const getDefaultArenaSettings = (): Pick<Settings, 'providerA' | 'modelA' | 'temperatureA' | 'providerB' | 'modelB' | 'temperatureB'> => ({
-  providerA: 'neurarouter',
-  modelA: 'openrouter/deepseek-r1-0528:free',
+  providerA: 'openrouter',
+  modelA: 'google/gemini-2.5-pro-preview-06-05',
   temperatureA: 0.7,
-  providerB: 'neurarouter',
-  modelB: 'openrouter/deepseek-r1-0528:free',
+  providerB: 'openrouter',
+  modelB: 'openai/o4-mini-2025-04-16',
   temperatureB: 0.7,
 });
 
@@ -71,7 +71,7 @@ export function getFirstMessage(message?: string): string {
   if (message) return message;
   
   // Otherwise, get from environment variable or use fallback
-  return import.meta.env.DEFAULT_WELCOME_MESSAGE || "Hello! I'm your AI assistant. How can I help you today?";
+  return import.meta.env.DEFAULT_WELCOME_MESSAGE || "Hello! I'm CGPT, your AI assistant. How can I help you today?";
 }
 
 // SECURITY FIX: All requests now go through our secure server
@@ -226,7 +226,7 @@ export async function* streamChatResponse(
             
             const data = JSON.parse(trimmedLine);
             
-            // Handle Neura format
+              // Handle router format
             if (data.chunk !== undefined) {
               yield data.chunk;
             }

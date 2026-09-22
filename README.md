@@ -7,19 +7,19 @@
 [![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E)](https://prettier.io/)
 
-[![Neura OS Chatbot UI](https://img.shields.io/badge/Neura%20OS%20Chatbot%20UI-7f56da)](https://open-source-chatbot-ui.meetneura.ai)[![Powered by Neura AI](https://img.shields.io/badge/Powered%20by-Neura%20AI-7f56da)](https://meetneura.ai)
+[![CGPT](https://img.shields.io/badge/CGPT-ChatGPT%20AI%20Chat-10a37f?style=for-the-badge)](https://cgpt-chat.com)
 
-# Neura Spark Listener | Open-Source Chabot UI: A complete multi-service AI chat interface for everyone 🤝
+# CGPT - ChatGPT-like AI Chat Platform
 
 ## Overview
 
-Neura Spark Listener is a modern, customizable open-source AI chatbot interface. It's built with Vite, React, TypeScript, shadcn UI, prisma DB, and more modern web technologies to provide an exceptional user experience.
+CGPT is a modern, customizable open-source AI chatbot interface built with Vite, React, TypeScript, shadcn UI, prisma DB, and more modern web technologies to provide an exceptional ChatGPT-like user experience.
 
 Check comprehensive feature list below. 
 
 ## Features
 
-- **Switch Easily Multiple AI Providers**: Seamlessly switch between Groq, Neura, Flowise, OpenRouter, Google, Antropic or OpenAI
+- **Switch Easily Multiple AI Providers**: Seamlessly switch between Groq, Flowise, OpenRouter, Google, Anthropic or OpenAI
 - **Google Gemini Web Research**: Select web mode if you to research in real time with sources.
 - **System Prompt Management**: Easily manage and switch between multiple system prompts.
 - **Context Window Size Setting**: Choose from 1 pair to the last 10 pair to keep context with the apiService.
@@ -72,11 +72,11 @@ Attachment Preview: Shows thumbnails for uploaded images and file information fo
 
 ### Chat Bubble Boxed View
 
-![Chat Bubble View](./public/neura-spark-chatbubble-preview.png)![Chat Bubble View](./public/neura-spark-bubble-preview.png)
+![Chat Bubble View](./public/cgpt-chatbubble-preview.png)![Chat Bubble View](./public/cgpt-bubble-preview.png)
 
 ### Chat Arena View
 
-![Chat Arena View](./public/neura-spark-chat-arena-preview.png)
+![Chat Arena View](./public/cgpt-chat-arena-preview.png)
 
 
 ## Getting Started
@@ -90,8 +90,8 @@ Attachment Preview: Shows thumbnails for uploaded images and file information fo
 
 ```bash
 # Clone the repository
-git clone https://github.com/adolfousier/neura-spark-listener-chatbot-ui
-cd neura-ai
+git clone https://github.com/eddremonts86/ai-schadcn-chat
+cd cgpt-chat
 
 # Install dependencies
 npm install
@@ -123,7 +123,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 CLAUDE_API_KEY=your_claude_api_key_here
 GOOGLE_API_KEY=your_google_api_key_here
 OPENROUTER_API_KEY=your_openrouter_api_key_here
-NEURA_ROUTER_API_KEY=your_neura_api_key_here
+FLOWISE_API_KEY=your_flowise_api_key_here
 FLOWISE_API_KEY=your_flowise_api_key_here
 ```
 
@@ -136,7 +136,7 @@ DATABASE_URL="file:./db/dev.db"  # SQLite database path
 # Application settings
 VITE_PORT=4173  # Development server port
 VITE_BOXED_CHATBUBBLE_MODE_ENABLED=true  # Enable boxed chat bubble interface
-VITE_BACKEND_SERVICE_PROVIDER=groq  # Default AI service (groq, neura, openai, claude, google, openrouter, flowise)
+VITE_BACKEND_SERVICE_PROVIDER=openai  # Default AI service (openai, claude, google, openrouter, groq, flowise)
 
 # Streaming and response configuration
 VITE_STREAM_ENABLED=true  # Enable/disable streaming responses
@@ -164,9 +164,9 @@ VITE_GOOGLE_API_URL=https://generativelanguage.googleapis.com
 VITE_GOOGLE_API_MODEL=gemini-2.5-pro-exp-03-25  # Default Google model
 ```
 
-**Neura AI Settings:**
+**Google AI Settings:**
 ```env
-VITE_NEURA_ROUTER_API_URL=https://api.meetneura.ai/v1/router/chat/completions
+VITE_OPENROUTER_API_URL=https://openrouter.ai/api/v1/chat/completions
 ```
 
 **OpenRouter Settings:**
@@ -204,7 +204,7 @@ VITE_OPENAI_TTS_API_VOICE=shimmer  # Voice selection (alloy, echo, fable, onyx, 
 - **Anthropic Claude**: Get your API key from [Anthropic Console](https://console.anthropic.com/)
 - **Google AI**: Get your API key from [Google AI Studio](https://aistudio.google.com/)
 - **OpenRouter**: Get your API key from [OpenRouter](https://openrouter.ai/)
-- **Neura AI**: Contact [Neura AI](https://meetneura.ai/) for API access
+- **OpenRouter**: Get your API key from [OpenRouter](https://openrouter.ai/)
 - **Flowise**: Set up your own Flowise instance or use a hosted service
 
 #### Security Notes
@@ -303,7 +303,7 @@ npm run format
 - **Sitemap & Robots.txt**: Created proper XML sitemap and robots.txt for search engine discovery
 - **Structured Data**: Implemented JSON-LD schema markup for rich search results
 - **Enhanced Meta Tags**: Improved title, description, keywords, and canonical URLs
-- **Social Media Ready**: Optimized sharing with `neura-spark-listener-preview-vertical.png` image
+- **Social Media Ready**: Optimized sharing with `cgpt-logo.svg` image
 
 **🌟 GitHub Integration**
 
@@ -321,7 +321,7 @@ npm run format
 - **Updated Base Image**: Upgraded from Node 18-buster to Node 20-bookworm for better security and performance
 - **Streamlined Docker Build**: Simplified build process with new `build:docker` script that skips database setup during container build
 - **Improved Data Directory Structure**: Standardized data storage to `data/uploads` and `data/audio` directories with proper permissions
-- **Enhanced Container Configuration**: Updated compose.yml to use official Docker Hub image `meetneuraai/neura-open-source-ui:latest`
+- **Enhanced Container Configuration**: Updated compose.yml to use CGPT Docker image `cgpt-chat:latest`
 - **Optimized Database Initialization**: Moved Prisma generate and db push to runtime for better container startup reliability
 - **Server-side TTS Integration**: Fixed audio service to use secure server-side TTS endpoints instead of client-side API calls
 - **TypeScript Configuration Updates**: Enhanced tsconfig.server.json with proper path mapping and type resolution
@@ -413,7 +413,7 @@ d of React state
 
 ### v0.3.0
 
-1.  **Updated AI Models**: Updated OpenAI, Anthropic, OpenRouter, Groq, and Neura models.
+1.  **Updated AI Models**: Updated OpenAI, Anthropic, OpenRouter, Groq, and Google models.
 2.  **Fixed Diagram Resizing/Re-rendering Issue**: Workd better with Sonnet, Opus, o4-mini etc...
     *   Added `isRendered` state to prevent multiple renders of the same diagram.
     *   Used empty dependency array `[]` in Mermaid initialization to run only once.

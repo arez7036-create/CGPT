@@ -5,15 +5,15 @@
 
 @layer base {
   :root {
-    /* Base */
+    /* Base - CGPT Green Theme (Light Mode) */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 160 84% 35%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -24,12 +24,12 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --ring: 160 84% 35%;
     --radius: 1rem;
 
-    /* Template 1: Minimal */
-    --template1: 220 14% 96%;
-    --template1-foreground: 220 70% 17%;
+    /* Template 1: Minimal (CGPT Green) */
+    --template1: 160 84% 35%;
+    --template1-foreground: 0 0% 100%;
 
     /* Template 2: Vibrant */
     --template2: 262 83% 58%;
@@ -41,29 +41,29 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 210 0% 13%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 210 0% 15%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 210 0% 15%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+    --primary: 160 84% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 0% 18%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+    --muted: 210 0% 18%;
+    --muted-foreground: 210 0% 60%;
+    --accent: 210 0% 18%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --border: 210 0% 20%;
+    --input: 210 0% 20%;
+    --ring: 160 84% 35%;
 
-    /* Template 1: Minimal Dark */
-    --template1: 220 14% 10%;
-    --template1-foreground: 220 14% 96%;
+    /* Template 1: Minimal Dark (CGPT Green Dark) */
+    --template1: 160 84% 35%;
+    --template1-foreground: 0 0% 100%;
 
     /* Template 2: Vibrant Dark */
     --template2: 262 50% 30%;
@@ -93,6 +93,8 @@
 /* Template specific base styles */
 .template-minimal {
   --radius: 0.5rem;
+  --primary: 160 84% 35%;
+  --primary-foreground: 0 0% 100%;
 }
 
 .template-vibrant {
@@ -113,6 +115,8 @@
 
 .dark.template-minimal {
   --radius: 0.5rem;
+  --primary: 160 84% 35%;
+  --primary-foreground: 0 0% 100%;
 }
 
 .dark.template-vibrant {

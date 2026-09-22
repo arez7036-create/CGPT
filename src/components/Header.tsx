@@ -24,7 +24,7 @@ export function Header({ className, arenaMode }: HeaderProps) { // Destructure a
     )}>
       <div className="flex items-center space-x-2">
         <Logo />
-        <h1 className="text-xl font-semibold tracking-tight">NEURA CHAT</h1>
+        <h1 className="text-xl font-semibold tracking-tight">CGPT</h1>
       </div>
       
       <div className="flex items-center space-x-3">

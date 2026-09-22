@@ -32,20 +32,7 @@ export default function TemplatesPage() {
       </main>
       
       <footer className="border-t py-6 text-center text-sm text-muted-foreground">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-          <Button size="sm" variant="outline" asChild>
-            <a href="https://github.com/adolfousier/neura-spark-listener-chatbot-ui" target="_blank" rel="noopener noreferrer" className="gap-2">
-              ⭐ Star on GitHub
-            </a>
-          </Button>
-          <Button size="sm" variant="outline" asChild>
-            <a href="https://github.com/adolfousier/neura-spark-listener-chatbot-ui/fork" target="_blank" rel="noopener noreferrer" className="gap-2">
-              🍴 Fork The Code
-            </a>
-          </Button>
-        </div>
-        <p>v0.4.2 (2025-09-20) Neura Open Source Chatbot UI • Powered by{" "}<a href="https://meetneura.ai" target="_blank" rel="noopener noreferrer">Neura AI</a>
-        </p>
+        <p>CGPT v1.0.0 - ChatGPT-like AI Chat Platform</p>
       </footer>
     </div>
   );

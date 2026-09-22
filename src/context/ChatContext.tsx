@@ -332,15 +332,15 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         let currentArenaModelSettings = arenaSettings;
         if (!currentArenaModelSettings || currentArenaModelSettings.length < 2) {
           const defaultArenaModelA: Settings = { 
-            ...(settings as Settings), // Base settings from ChatContext
-            model: settings.modelA || 'gemini-1.0-pro', // Fallback if modelA is not in settings
-            provider: settings.providerA || 'google', // Fallback if providerA is not in settings
+            ...(settings as Settings),
+            model: settings.modelA || 'gemini-2.0-flash',
+            provider: settings.providerA || 'google',
             arenaModelLabel: 'Model A' 
           };
           const defaultArenaModelB: Settings = { 
-            ...(settings as Settings), // Base settings from ChatContext
-            model: settings.modelB || 'claude-2', // Fallback if modelB is not in settings
-            provider: settings.providerB || 'anthropic', // Fallback if providerB is not in settings
+            ...(settings as Settings),
+            model: settings.modelB || 'gpt-4o', 
+            provider: settings.providerB || 'openai',
             arenaModelLabel: 'Model B' 
           };
           currentArenaModelSettings = [defaultArenaModelA, defaultArenaModelB];

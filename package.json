@@ -1,9 +1,9 @@
 {
-  "name": "neura-chatbot-ui",
+  "name": "cgpt-chat",
   "private": true,
   "version": "0.4.2",
   "type": "module",
-  "author": "Adolfo Usier <adolfo@meetneura.ai>",
+  "author": "CGPT",
 
   "scripts": {
     "dev": "npm run db:setup && concurrently \"npm run server:dev\" \"vite\"",

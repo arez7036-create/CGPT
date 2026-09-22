@@ -77,13 +77,13 @@ export function SidebarConversations() {
   return (
     <div className="flex flex-col h-full">
       <div className="p-4">
-        <Button 
-          onClick={() => createNewConversation()} 
-          className="w-full"
-        >
-          <PlusCircle className="mr-2 h-4 w-4" />
-          New Conversation
-        </Button>
+          <Button 
+           onClick={() => createNewConversation()} 
+           className="w-full"
+         >
+           <PlusCircle className="mr-2 h-4 w-4" />
+           New Chat
+         </Button>
       </div>
       
       <ScrollArea className="flex-1 px-2">

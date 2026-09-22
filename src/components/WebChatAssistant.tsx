@@ -64,7 +64,7 @@ const WebChatAssistant: React.FC = () => {
           <header className="flex items-center justify-between p-3 border-b bg-background">
             <div className="flex items-center space-x-2">
               <Logo />
-              <h3 className="text-lg font-semibold">Neura Chat</h3>
+              <h3 className="text-lg font-semibold">CGPT</h3>
             </div>
             <div className="flex items-center space-x-1">
               <TooltipProvider>
@@ -127,14 +127,7 @@ const WebChatAssistant: React.FC = () => {
           {currentConversation && <MessageInput />}
           <footer className="py-3 px-4 text-center text-xs text-muted-foreground border-t bg-background">
             <div>
-              <a 
-                href="https://meetneura.ai" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-              >
-                Powered by Neura AI
-              </a>
+              CGPT
             </div>
           </footer>
         </div>
