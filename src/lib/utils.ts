@@ -169,7 +169,7 @@ export function getAzureStorageSasToken(): string {
  * Get the secure server base URL
  */
 export function getSecureApiBaseUrl(): string {
-  return import.meta.env.VITE_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:4174';
+  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4174';
 }
 
 /**
