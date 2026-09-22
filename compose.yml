@@ -12,6 +12,12 @@ services:
     build:
       context: .
       dockerfile: dockerfile
+      args:
+        - VITE_API_BASE_URL
+        - VITE_BASE_URL
+        - VITE_BACKEND_SERVICE_PROVIDER
+        - VITE_OLLAMA_API_MODEL
+        - NODE_ENV
     image: cgpt-chat:latest
     container_name: ${CONTAINER_NAME}
     ports:
