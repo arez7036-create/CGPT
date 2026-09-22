@@ -71,12 +71,14 @@ const getApiKey = (provider: string): string | null => {
       return process.env.GOOGLE_API_KEY || null;
      case 'openrouter':
       return process.env.OPENROUTER_API_KEY || null;
-    case 'flowise':
-      return process.env.FLOWISE_API_KEY || null;
-    default:
-      return null;
-  }
-};
+     case 'flowise':
+       return process.env.FLOWISE_API_KEY || null;
+     case 'ollama':
+       return 'not-needed';
+     default:
+       return null;
+   }
+ };
 
 // Chat completions endpoint - handles all providers securely
 app.post('/api/chat/completions', async (req, res) => {
@@ -261,6 +263,121 @@ app.post('/api/chat/completions', async (req, res) => {
           }]
         };
         break;
+      }
+
+      case 'ollama': {
+        const ollamaUrl = process.env.OLLAMA_API_URL || 'http://localhost:11434';
+
+        if (stream) {
+          res.setHeader('Content-Type', 'text/event-stream');
+          res.setHeader('Cache-Control', 'no-cache');
+          res.setHeader('Connection', 'keep-alive');
+
+          const ollamaResponse = await fetch(`${ollamaUrl}/api/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: model || 'llama3.2',
+              messages: messages.map((msg: any) => ({
+                role: msg.role,
+                content: msg.content,
+              })),
+              stream: true,
+              options: { temperature, max_tokens },
+            }),
+          });
+
+          if (!ollamaResponse.ok) {
+            throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
+          }
+
+          const reader = ollamaResponse.body?.getReader();
+          if (!reader) {
+            throw new Error('No response body from Ollama');
+          }
+
+          const decoder = new TextDecoder();
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n').filter((l) => l.trim());
+
+            for (const line of lines) {
+              if (!line.startsWith('data:')) continue;
+              const jsonStr = line.slice(5).trim();
+              if (!jsonStr) continue;
+
+              try {
+                const data = JSON.parse(jsonStr);
+                if (data.done) continue;
+
+                if (data.message?.content) {
+                  const chunk = {
+                    id: `chatcmpl-${Date.now()}`,
+                    object: 'chat.completion.chunk',
+                    created: Date.now(),
+                    model: model || 'llama3.2',
+                    choices: [
+                      {
+                        index: 0,
+                        delta: { content: data.message.content },
+                        finish_reason: null,
+                      },
+                    ],
+                  };
+                  res.write(`data: ${JSON.stringify(chunk)}\n\n`);
+                }
+              } catch {
+                continue;
+              }
+            }
+          }
+
+          res.write('data: [DONE]\n\n');
+          res.end();
+          return;
+        } else {
+          const ollamaResponse = await fetch(`${ollamaUrl}/api/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: model || 'llama3.2',
+              messages: messages.map((msg: any) => ({
+                role: msg.role,
+                content: msg.content,
+              })),
+              stream: false,
+              options: { temperature, max_tokens },
+            }),
+          });
+
+          if (!ollamaResponse.ok) {
+            throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
+          }
+
+          const ollamaResult = await ollamaResponse.json();
+
+          response = {
+            id: `chatcmpl-${Date.now()}`,
+            object: 'chat.completion',
+            created: Date.now(),
+            model: model || 'llama3.2',
+            choices: [
+              {
+                index: 0,
+                message: {
+                  role: 'assistant',
+                  content: ollamaResult.message.content,
+                },
+                finish_reason: 'stop',
+              },
+            ],
+          };
+          break;
+        }
       }
 
       default:

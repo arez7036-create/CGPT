@@ -164,6 +164,16 @@ export function SettingsDialog({ arenaMode }: { arenaMode: boolean }) {
         );
       case 'flowise':
         return <SelectItem value="default">Default Chatflow</SelectItem>;
+      case 'ollama':
+        return (
+          <>
+            <SelectItem value="llama3.2">Llama 3.2 3B</SelectItem>
+            <SelectItem value="llama3.2-vision">Llama 3.2 Vision 11B</SelectItem>
+            <SelectItem value="gemma2">Gemma 2 9B</SelectItem>
+            <SelectItem value="qwen2.5">Qwen 2.5 7B</SelectItem>
+            <SelectItem value="phi3">Phi 3 mini 4K</SelectItem>
+          </>
+        );
       case 'google':
         return (
           <>
@@ -226,6 +236,7 @@ export function SettingsDialog({ arenaMode }: { arenaMode: boolean }) {
                           <SelectItem value="flowise">Flowise</SelectItem>
                           <SelectItem value="claude">Anthropic</SelectItem>
                           <SelectItem value="openai">OpenAI</SelectItem>
+                     <SelectItem value="ollama">Ollama</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -290,6 +301,7 @@ export function SettingsDialog({ arenaMode }: { arenaMode: boolean }) {
                           <SelectItem value="flowise">Flowise</SelectItem>
                           <SelectItem value="claude">Anthropic</SelectItem>
                           <SelectItem value="openai">OpenAI</SelectItem>
+                     <SelectItem value="ollama">Ollama</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

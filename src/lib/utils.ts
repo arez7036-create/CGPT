@@ -22,16 +22,18 @@ export function formatDate(date: Date): string {
 
 export function getProviderFromEnv(): Provider {
   const provider = import.meta.env.VITE_BACKEND_SERVICE_PROVIDER?.toLowerCase() as Provider;
-  return ['claude', 'openai', 'flowise', 'openrouter', 'google'].includes(provider) ? provider : 'groq';
+  return ['openai', 'flowise', 'ollama', 'openrouter', 'google', 'anthropic'].includes(provider) ? provider : 'groq';
 }
 
 export const getDefaultSettings = (): Omit<Settings, 'providerA' | 'modelA' | 'temperatureA' | 'providerB' | 'modelB' | 'temperatureB'> => {
   const provider = getProviderFromEnv();
   let defaultModel = import.meta.env.VITE_GROQ_API_MODEL || 'deepseek-r1-distill-llama-70b';
 
-  // Set appropriate default model based on provider
   if (provider === 'google') {
     defaultModel = import.meta.env.VITE_GOOGLE_API_MODEL || 'gemini-2.0-flash';
+  }
+  if (provider === 'ollama') {
+    defaultModel = import.meta.env.VITE_OLLAMA_API_MODEL || 'llama3.2';
   }
   return {
     provider,
