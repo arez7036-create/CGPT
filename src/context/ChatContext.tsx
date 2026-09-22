@@ -13,6 +13,7 @@ type ChatContextType = {
   settings: Settings;
   isLoading: boolean;
   isStreaming: boolean;
+  isInputDisabled: boolean;
   streamController: AbortController | null;
    setSettings: (settings: Settings) => void;
    updateSettings: (settings: Partial<Settings>) => void;
@@ -36,6 +37,7 @@ const ChatContext = createContext<ChatContextType>({
   settings: getDefaultSettings(),
   isLoading: false,
   isStreaming: false,
+  isInputDisabled: false,
   streamController: null,
   setSettings: () => {},
   updateSettings: () => {},
@@ -59,6 +61,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [settings, setSettings] = useState<Settings>(getDefaultSettings());
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isInputDisabled, setIsInputDisabled] = useState(false);
   const [streamController, setStreamController] = useState<AbortController | null>(null);
   const { toast } = useToast();
 
@@ -457,6 +460,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     settings,
     isLoading,
     isStreaming,
+    isInputDisabled,
     streamController,
     setSettings,
     updateSettings,
@@ -478,6 +482,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     settings,
     isLoading,
     isStreaming,
+    isInputDisabled,
     streamController,
     setSettings,
     updateSettings,
