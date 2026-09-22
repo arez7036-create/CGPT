@@ -525,7 +525,7 @@ export default defineConfig(({ mode }) => {
     }
   },
     build: {
-      outDir: 'build',
+      outDir: 'dist',
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1600,
       rollupOptions: {
