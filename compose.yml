@@ -80,11 +80,9 @@ services:
         max-size: "10m"
         max-file: "7"
         compress: "true"
-  deploy:
-    resources:
-      limits:
-        cpus: "1.5"
-        memory: 2G
+    ollama:
+      cpus: "1.5"
+      mem_limit: 2G
     restart: unless-stopped
 
 volumes:
