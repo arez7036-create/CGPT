@@ -1,4 +1,13 @@
 services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
   cgpt:
     build:
       context: .
@@ -19,7 +28,7 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - FLOWISE_API_KEY=${FLOWISE_API_KEY}
-      
+
       # Server-side API URLs
       - PORT=4174
       - VITE_PORT=${VITE_PORT}
@@ -29,35 +38,32 @@ services:
       - GOOGLE_API_URL=${GOOGLE_API_URL}
       - OPENROUTER_API_URL=${OPENROUTER_API_URL}
       - FLOWISE_API_URL=${FLOWISE_API_URL}
-      
-      # Server-side provider configs
-      - FLOWISE_CHATFLOW_ID=${FLOWISE_CHATFLOW_ID}
-      - OPENROUTER_HTTP_REFERER=${OPENROUTER_HTTP_REFERER}
-      - OPENROUTER_X_TITLE=${OPENROUTER_X_TITLE}
-      - GOOGLE_API_MODEL=${GOOGLE_API_MODEL}
-      - OPENAI_TTS_API_MODEL=${OPENAI_TTS_API_MODEL}
-      - OPENAI_TTS_API_VOICE=${OPENAI_TTS_API_VOICE}
-      - GROQ_STT_API_MODEL=${GROQ_STT_API_MODEL}
-      
+      - OLLAMA_API_URL=${OLLAMA_API_URL:-http://ollama:11434}
+
       # Client-side settings (safe to expose with VITE_ prefix)
       - VITE_BOXED_CHATBUBBLE_MODE_ENABLED=${VITE_BOXED_CHATBUBBLE_MODE_ENABLED}
-      - DEFAULT_SYSTEM_PROMPT=${DEFAULT_SYSTEM_PROMPT}
-      - DEFAULT_WELCOME_MESSAGE=${DEFAULT_WELCOME_MESSAGE}
       - VITE_BACKEND_SERVICE_PROVIDER=${VITE_BACKEND_SERVICE_PROVIDER}
+      - VITE_OLLAMA_API_MODEL=${VITE_OLLAMA_API_MODEL:-llama3.2}
       - VITE_GROQ_API_MODEL=${VITE_GROQ_API_MODEL}
       - VITE_STREAM_ENABLED=${VITE_STREAM_ENABLED}
       - VITE_REASONING_FORMAT=${VITE_REASONING_FORMAT}
-      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
       - VITE_BASE_URL=${VITE_BASE_URL}
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
+      # Default Messages
+      - DEFAULT_SYSTEM_PROMPT=${DEFAULT_SYSTEM_PROMPT}
+      - DEFAULT_WELCOME_MESSAGE=${DEFAULT_WELCOME_MESSAGE}
 
       # Database
       - DATABASE_URL=${DATABASE_URL}
-      
+
       # Azure Storage (SERVER-SIDE ONLY - SAS tokens are sensitive!)
       - AZURE_STORAGE_CONTAINER_ID=${AZURE_STORAGE_CONTAINER_ID}
       - AZURE_STORAGE_ACCOUNT_NAME=${AZURE_STORAGE_ACCOUNT_NAME}
       - AZURE_STORAGE_SAS_TOKEN=${AZURE_STORAGE_SAS_TOKEN}
 
+    depends_on:
+      - ollama
     volumes:
       - ./public:/app/public
       - ./data/audio:/app/data/audio
@@ -72,5 +78,8 @@ services:
       resources:
         limits:
           cpus: "0.8"
-          memory: 2G
-    restart: always
+          memory: 1G
+    restart: unless-stopped
+
+volumes:
+  ollama-data:
