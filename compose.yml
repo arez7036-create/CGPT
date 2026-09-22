@@ -6,6 +6,8 @@ services:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
+    cpus: "1.5"
+    mem_limit: 2G
     restart: unless-stopped
 
   cgpt:
@@ -21,12 +23,11 @@ services:
     image: cgpt-chat:latest
     container_name: ${CONTAINER_NAME}
     ports:
-      - "4173:4173"  # Frontend client port
-      - "4174:4174"  # Backend server port
+      - "4173:4173"
+      - "4174:4174"
     env_file:
       - .env
     environment:
-      # SECURITY: Server-side API keys (not exposed to browser)
       - NODE_ENV=production
       - GROQ_API_KEY=${GROQ_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -34,8 +35,6 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - FLOWISE_API_KEY=${FLOWISE_API_KEY}
-
-      # Server-side API URLs
       - PORT=4174
       - VITE_PORT=${VITE_PORT}
       - GROQ_API_URL=${GROQ_API_URL}
@@ -45,8 +44,6 @@ services:
       - OPENROUTER_API_URL=${OPENROUTER_API_URL}
       - FLOWISE_API_URL=${FLOWISE_API_URL}
       - OLLAMA_API_URL=${OLLAMA_API_URL:-http://ollama:11434}
-
-      # Client-side settings (safe to expose with VITE_ prefix)
       - VITE_BOXED_CHATBUBBLE_MODE_ENABLED=${VITE_BOXED_CHATBUBBLE_MODE_ENABLED}
       - VITE_BACKEND_SERVICE_PROVIDER=${VITE_BACKEND_SERVICE_PROVIDER}
       - VITE_OLLAMA_API_MODEL=${VITE_OLLAMA_API_MODEL:-llama3.2}
@@ -55,19 +52,12 @@ services:
       - VITE_REASONING_FORMAT=${VITE_REASONING_FORMAT}
       - VITE_BASE_URL=${VITE_BASE_URL}
       - VITE_API_BASE_URL=${VITE_API_BASE_URL}
-
-      # Default Messages
       - DEFAULT_SYSTEM_PROMPT=${DEFAULT_SYSTEM_PROMPT}
       - DEFAULT_WELCOME_MESSAGE=${DEFAULT_WELCOME_MESSAGE}
-
-      # Database
       - DATABASE_URL=${DATABASE_URL}
-
-      # Azure Storage (SERVER-SIDE ONLY - SAS tokens are sensitive!)
       - AZURE_STORAGE_CONTAINER_ID=${AZURE_STORAGE_CONTAINER_ID}
       - AZURE_STORAGE_ACCOUNT_NAME=${AZURE_STORAGE_ACCOUNT_NAME}
       - AZURE_STORAGE_SAS_TOKEN=${AZURE_STORAGE_SAS_TOKEN}
-
     depends_on:
       - ollama
     volumes:
@@ -80,9 +70,6 @@ services:
         max-size: "10m"
         max-file: "7"
         compress: "true"
-    ollama:
-      cpus: "1.5"
-      mem_limit: 2G
     restart: unless-stopped
 
 volumes:
