@@ -545,7 +545,8 @@ export default defineConfig(({ mode }) => {
     allowedHosts: [
       "localhost",
       "127.0.0.1",
-      "cgpt-chat.com"
+      "cgpt-chat.com",
+      "64.176.75.208"
     ]
   }
   };
