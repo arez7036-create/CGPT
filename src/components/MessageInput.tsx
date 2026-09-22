@@ -42,7 +42,7 @@ export function MessageInput() {
 
     if (!message.trim() || isSubmitting || !currentConversationId) return;
 
-    addMessage("user", message);
+    addMessage({ role: 'user', content: message });
 
     setIsSubmitting(true);
     setMessage("");
@@ -136,7 +136,7 @@ export function MessageInput() {
       } else if (!settings.streamEnabled && !(response instanceof ReadableStream)) {
         const nonStreamResponse = response as ChatResponse;
         const responseContent = nonStreamResponse.choices[0]?.message?.content || "No response from AI";
-        addMessage("assistant", responseContent);
+        addMessage({ role: 'assistant', content: responseContent });
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -145,7 +145,7 @@ export function MessageInput() {
         description: error instanceof Error ? error.message : "Failed to send message",
         variant: "destructive",
       });
-      addMessage("assistant", "Sorry, I encountered an error. Please try again.");
+      addMessage({ role: 'assistant', content: "Sorry, I encountered an error. Please try again." });
     } finally {
       setIsSubmitting(false);
       stopStreaming();

@@ -14,7 +14,8 @@ type ChatContextType = {
   isLoading: boolean;
   isStreaming: boolean;
   streamController: AbortController | null;
-  setSettings: (settings: Settings) => void;
+   setSettings: (settings: Settings) => void;
+   updateSettings: (settings: Partial<Settings>) => void;
   setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
   createNewConversation: (initialMessage?: string) => Promise<string>;
   selectConversation: (id: string) => void;
@@ -36,6 +37,7 @@ const ChatContext = createContext<ChatContextType>({
   isStreaming: false,
   streamController: null,
   setSettings: () => {},
+  updateSettings: () => {},
   setConversations: () => {},
   createNewConversation: async () => '',
   selectConversation: () => {},
@@ -432,6 +434,10 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
+  const updateSettings = useCallback((partial: Partial<Settings>) => {
+    setSettings(prev => ({ ...prev, ...partial }));
+  }, []);
+
   const contextValue = useMemo(() => ({
     conversations,
     currentConversationId,
@@ -440,6 +446,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     isStreaming,
     streamController,
     setSettings,
+    updateSettings,
     setConversations,
     createNewConversation,
     selectConversation,
