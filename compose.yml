@@ -13,13 +13,13 @@ services:
       context: .
       dockerfile: dockerfile
       args:
-        - VITE_API_BASE_URL
-        - VITE_BASE_URL
-        - VITE_BACKEND_SERVICE_PROVIDER
-        - VITE_OLLAMA_API_MODEL
-        - NODE_ENV
+        VITE_API_BASE_URL: http://64.176.75.208:4174
+        VITE_BASE_URL: http://64.176.75.208:4173
+        VITE_BACKEND_SERVICE_PROVIDER: ${VITE_BACKEND_SERVICE_PROVIDER}
+        VITE_OLLAMA_API_MODEL: ${VITE_OLLAMA_API_MODEL:-llama3.2}
+        NODE_ENV: development
     image: cgpt-chat:latest
-    container_name: ${CONTAINER_NAME}
+    container_name: cgpt_chat
     ports:
       - "4173:4173"
       - "4174:4174"
