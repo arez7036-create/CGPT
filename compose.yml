@@ -6,8 +6,6 @@ services:
       - "11434:11434"
     volumes:
       - ollama-data:/root/.ollama
-    cpus: "1.5"
-    mem_limit: 2G
     restart: unless-stopped
 
   cgpt:
