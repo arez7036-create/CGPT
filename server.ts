@@ -37,13 +37,18 @@ app.use(cors({
 app.set('trust proxy', 1);
 app.use(express.json());
 
+// Health check (defined before static file serving)
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Server is running' });
+});
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('dist'));
   
   // Handle client-side routing in production
   app.get('*', (req, res, next) => {
-    // Skip API routes
+    // Skip API routes and health check
     if (req.path.startsWith('/api/')) {
       return next();
     }
@@ -51,11 +56,6 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
   });
 }
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' });
-});
 
 // Secure API key getter (server-side only, no VITE_ prefix)
 const getApiKey = (provider: string): string | null => {
