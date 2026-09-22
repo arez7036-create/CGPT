@@ -20,7 +20,7 @@ type ChatContextType = {
   setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
   createNewConversation: (initialMessage?: string) => Promise<string>;
   selectConversation: (id: string) => void;
-  addMessage: (message: Partial<Message>) => Promise<void>;
+  addMessage: (message: Partial<Message>, conversationId?: string) => Promise<void>;
   deleteConversation: (id: string) => Promise<void>;
   renameConversation: (id: string, newTitle: string) => void;
   clearConversations: () => Promise<void>;
@@ -66,37 +66,55 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const savedConversations = localStorage.getItem('conversations');
-    const savedSettings = localStorage.getItem('settings');
-
     const loadConversations = async () => {
-      if (savedConversations) {
-        try {
-          const parsed = JSON.parse(savedConversations);
-           const formattedConversations = parsed.map((conv: Record<string, unknown>) => ({
-             ...conv,
-             createdAt: new Date(conv.createdAt as string),
-             updatedAt: new Date(conv.updatedAt as string),
-             messages: (conv.messages as Array<Record<string, unknown>>).map((msg) => ({
-               ...msg,
-               createdAt: new Date(msg.createdAt as string)
-             }))
-           }));
+      try {
+        const serverConversations = await dbService.getConversations();
+        if (serverConversations.length > 0) {
+          const formattedConversations = serverConversations.map((conv: Conversation) => ({
+            ...conv,
+            createdAt: new Date(conv.createdAt),
+            updatedAt: new Date(conv.updatedAt),
+            messages: conv.messages.map((msg: Message) => ({
+              ...msg,
+              createdAt: new Date(msg.createdAt)
+            }))
+          }));
           setConversations(formattedConversations);
-
-          if (formattedConversations.length > 0) {
-            setCurrentConversationId(formattedConversations[0].id);
-          }
-        } catch (error) {
-          console.error('Error parsing saved conversations:', error);
+          setCurrentConversationId(formattedConversations[0].id);
+        } else {
           await createNewConversation();
         }
-      } else {
-        await createNewConversation();
+      } catch (error) {
+        console.error('Error loading conversations from server:', error);
+        const savedConversations = localStorage.getItem('conversations');
+        if (savedConversations) {
+          try {
+            const parsed = JSON.parse(savedConversations);
+            const formattedConversations = parsed.map((conv: Record<string, unknown>) => ({
+              ...conv,
+              createdAt: new Date(conv.createdAt as string),
+              updatedAt: new Date(conv.updatedAt as string),
+              messages: (conv.messages as Array<Record<string, unknown>>).map((msg) => ({
+                ...msg,
+                createdAt: new Date(msg.createdAt as string)
+              }))
+            }));
+            setConversations(formattedConversations);
+            if (formattedConversations.length > 0) {
+              setCurrentConversationId(formattedConversations[0].id);
+            }
+          } catch (parseError) {
+            console.error('Error parsing saved conversations:', parseError);
+            await createNewConversation();
+          }
+        } else {
+          await createNewConversation();
+        }
       }
     };
     loadConversations();
 
+    const savedSettings = localStorage.getItem('settings');
     if (savedSettings) {
       try {
         const parsedSettings = JSON.parse(savedSettings);
@@ -148,8 +166,9 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     setCurrentConversationId(id);
   }, []);
 
-  const addMessage = useCallback(async (message: Partial<Message>) => {
-    if (!currentConversationId) return;
+  const addMessage = useCallback(async (message: Partial<Message>, conversationId?: string) => {
+    const convId = conversationId || currentConversationId;
+    if (!convId) return;
 
     const fullMessage: Message = {
       id: generateId(),
@@ -159,11 +178,11 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       tokenCount: message.content ? countTokens(message.content) : 0,
     };
 
-    const savedMessage = await dbService.addMessage(currentConversationId, fullMessage);
+    const savedMessage = await dbService.addMessage(convId, fullMessage);
 
     setConversations(prev =>
       prev.map(conv =>
-        conv.id === currentConversationId
+        conv.id === convId
           ? {
               ...conv,
               messages: [...conv.messages, savedMessage],
@@ -240,9 +259,10 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     editedMessageIndex?: number,
     returnResponse?: boolean
   ): Promise<{ content: string } | void> => {
-    if (!currentConversationId) {
-      const id = await createNewConversation();
-      setCurrentConversationId(id);
+    let convId = currentConversationId;
+    if (!convId) {
+      convId = await createNewConversation();
+      setCurrentConversationId(convId);
     }
 
     setIsLoading(true);
@@ -251,7 +271,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       if (editedMessageIndex !== undefined) {
         setConversations(prev =>
           prev.map(conv => {
-            if (conv.id === currentConversationId) {
+            if (conv.id === convId) {
               const messagesBeforeEdit = conv.messages.slice(0, editedMessageIndex);
               const originalMessage = conv.messages[editedMessageIndex];
               const updatedMessage = {
@@ -269,7 +289,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
           })
         );
       } else {
-        await addMessage({ role: "user", content });
+        await addMessage({ role: "user", content }, convId);
       }
 
       const messages = [];
@@ -278,7 +298,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         messages.push({ role: "system", content: settings.systemPrompt });
       }
 
-      const currentConversation = conversations.find(conv => conv.id === currentConversationId);
+      const currentConversation = conversations.find(conv => conv.id === convId);
       let messagesToSend: Message[] = [];
 
       if (currentConversation) {
@@ -335,17 +355,17 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
           tokenCount: 0
         };
 
-        setConversations(prev =>
-          prev.map(conv =>
-            conv.id === currentConversationId
-              ? {
-                  ...conv,
-                  messages: [...conv.messages, assistantMessage],
-                  updatedAt: new Date()
-                }
-              : conv
-          )
-        );
+         setConversations(prev =>
+           prev.map(conv =>
+             conv.id === convId
+               ? {
+                   ...conv,
+                   messages: [...conv.messages, assistantMessage],
+                   updatedAt: new Date()
+                 }
+               : conv
+           )
+         );
 
         const controller = startStreaming();
 
@@ -364,25 +384,25 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
               .split(/\s+|[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/)
               .filter(word => word.length > 0);
 
-            setConversations(prev =>
-              prev.map(conv =>
-                conv.id === currentConversationId
-                  ? {
-                      ...conv,
-                      messages: conv.messages.map(msg =>
-                        msg.id === assistantMessage.id
-                          ? {
-                              ...msg,
-                              content: responseContent,
-                              tokenCount: words.length
-                            }
-                          : msg
-                      ),
-                      updatedAt: new Date()
-                    }
-                  : conv
-              )
-            );
+             setConversations(prev =>
+               prev.map(conv =>
+                 conv.id === convId
+                   ? {
+                       ...conv,
+                       messages: conv.messages.map(msg =>
+                         msg.id === assistantMessage.id
+                           ? {
+                               ...msg,
+                               content: responseContent,
+                               tokenCount: words.length
+                             }
+                           : msg
+                       ),
+                       updatedAt: new Date()
+                     }
+                   : conv
+               )
+             );
           }
         } catch (error) {
           if (error.name !== 'AbortError') {
@@ -394,12 +414,12 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         const nonStreamResponse = response as ChatResponse;
         const responseContent = nonStreamResponse.choices[0]?.message?.content || "No response from AI";
 
-        setConversations(prev =>
-          prev.map(conv =>
-            conv.id === currentConversationId
-              ? {
-                  ...conv,
-                  messages: [...conv.messages, {
+         setConversations(prev =>
+           prev.map(conv =>
+             conv.id === convId
+               ? {
+                   ...conv,
+                   messages: [...conv.messages, {
                     id: generateId(),
                     role: 'assistant',
                     content: responseContent,
@@ -420,7 +440,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         variant: "destructive",
       });
 
-      addMessage({ role: 'assistant', content: "Sorry, I encountered an error. Please try again." });
+      addMessage({ role: 'assistant', content: "Sorry, I encountered an error. Please try again." }, convId);
     } finally {
       setIsLoading(false);
       stopStreaming();
