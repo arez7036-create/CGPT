@@ -38,6 +38,8 @@ export type Settings = {
   systemPrompt: string;
   contextWindowSize: number; // Number of message pairs to include in context
   webSearchEnabled: boolean; // Whether to use web search capability
+  lastProvider: Provider; // Provider before web search was enabled
+  lastModel: string; // Model before web search was enabled
   audioResponseEnabled: boolean; // Whether to convert AI responses to speech
   // Arena mode specific settings
   providerA?: Provider;

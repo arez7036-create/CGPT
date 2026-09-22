@@ -46,6 +46,8 @@ export const getDefaultSettings = (): Omit<Settings, 'providerA' | 'modelA' | 't
     systemPrompt: import.meta.env.DEFAULT_SYSTEM_PROMPT || "You are CGPT, a helpful AI assistant. You help users with their questions and tasks.",
     contextWindowSize: 5,
     webSearchEnabled: false,
+    lastProvider: provider,
+    lastModel: defaultModel,
     audioResponseEnabled: false,
   };
 };

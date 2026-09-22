@@ -675,22 +675,26 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const toggleWebSearch = useCallback(() => {
-    // Save previous settings when enabling web search
-    const prevSettings = { ...settings };
-    
     setSettings(prev => {
       const webSearchEnabled = !prev.webSearchEnabled;
       
-      // Toggle between web search and regular mode
-      return {
-        ...prev,
-        webSearchEnabled,
-        // When enabling web search, switch to Google provider with Gemini model
-        provider: webSearchEnabled ? 'google' : prev.provider,
-        model: webSearchEnabled ? 
-          (import.meta.env.VITE_GOOGLE_API_MODEL || 'gemini-2.5-pro-exp-03-25') : 
-          prev.model
-      };
+      if (webSearchEnabled) {
+        return {
+          ...prev,
+          webSearchEnabled,
+          lastProvider: prev.provider,
+          lastModel: prev.model,
+          provider: 'google',
+          model: import.meta.env.VITE_GOOGLE_API_MODEL || 'gemini-2.5-pro-exp-03-25',
+        };
+      } else {
+        return {
+          ...prev,
+          webSearchEnabled,
+          provider: prev.lastProvider,
+          model: prev.lastModel,
+        };
+      }
     });
     
     toast({
