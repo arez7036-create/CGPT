@@ -3,9 +3,13 @@ set -e
 
 echo "=== CGPT Deployment Script ==="
 
+# Detect server IP address
+SERVER_IP=$(hostname -I | awk '{print $1}')
+echo "Detected server IP: $SERVER_IP"
+
 # 1. Create .env first (needed by docker compose)
 echo "Creating .env file..."
-cat > .env << 'EOF'
+cat > .env << EOF
 # Server
 PORT=4174
 NODE_ENV=production
@@ -13,8 +17,8 @@ NODE_ENV=production
 # CGPT Settings
 VITE_BACKEND_SERVICE_PROVIDER=ollama
 VITE_OLLAMA_API_MODEL=llama3.2
-VITE_API_BASE_URL=http://localhost:4174
-VITE_BASE_URL=http://localhost:4173
+VITE_API_BASE_URL=http://${SERVER_IP}:4174
+VITE_BASE_URL=http://${SERVER_IP}:4173
 CONTAINER_NAME=cgpt_chat
 
 # Ollama (Docker internal networking)
@@ -45,8 +49,8 @@ docker compose up -d --build
 
 echo ""
 echo "=== Deployment Complete ==="
-echo "Frontend: http://localhost:4173"
-echo "Backend:  http://localhost:4174"
-echo "Health:    http://localhost:4174/health"
+echo "Frontend: http://${SERVER_IP}:4173"
+echo "Backend:  http://${SERVER_IP}:4174"
+echo "Health:   http://${SERVER_IP}:4174/health"
 echo ""
-echo "Logs:      docker compose logs -f"
+echo "Logs:     docker compose logs -f"
