@@ -306,12 +306,8 @@ app.post('/api/chat/completions', async (req, res) => {
             const lines = chunk.split('\n').filter((l) => l.trim());
 
             for (const line of lines) {
-              if (!line.startsWith('data:')) continue;
-              const jsonStr = line.slice(5).trim();
-              if (!jsonStr) continue;
-
               try {
-                const data = JSON.parse(jsonStr);
+                const data = JSON.parse(line);
                 if (data.done) continue;
 
                 if (data.message?.content) {
