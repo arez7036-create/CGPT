@@ -20,20 +20,20 @@ interface MarkdownRendererProps {
 }
 
 interface CodeComponentProps {
-  node?: any;
+  node?: Record<string, unknown>;
   inline?: boolean;
   children?: React.ReactNode;
   className?: string;
 }
 
 interface PreComponentProps {
-  node?: any;
+  node?: Record<string, unknown>;
   children?: React.ReactNode;
-  [key: string]: any;
+  [key: string]: Record<string, unknown> | React.ReactNode;
 }
 
 // Initialize mermaid ONCE at module level
-if (typeof mermaid !== 'undefined' && !window.mermaidInitialized) {
+if (typeof window !== 'undefined' && typeof mermaid !== 'undefined' && !window.mermaidInitialized) {
   mermaid.initialize({
     startOnLoad: false,
     theme: 'default',
@@ -139,9 +139,10 @@ const ImmutableMermaidRenderer = ({ code }: { code: string }) => {
         } else {
           container.innerHTML = '<div class="text-red-500 text-center py-4">Failed to generate diagram</div>';
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Mermaid render error:', err);
-        container.innerHTML = `<div class="text-red-500 text-center py-4">${err?.message || 'Render failed'}</div>`;
+        const errMsg = err instanceof Error ? err.message : 'Render failed';
+        container.innerHTML = `<div class="text-red-500 text-center py-4">${errMsg}</div>`;
       }
     };
 

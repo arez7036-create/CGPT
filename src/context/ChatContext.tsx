@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { Conversation, Message, Settings, Provider, ChatResponse } from '@/types';
+import { Conversation, Message, Settings, Provider, Template, ChatResponse } from '@/types';
 import { generateId, getDefaultSettings } from '@/lib/utils';
 import { useToast } from "@/hooks/use-toast";
 import { sendChatRequest } from "@/services/apiService";
@@ -25,9 +25,10 @@ type ChatContextType = {
   clearConversations: () => Promise<void>;
   startStreaming: () => AbortController;
   stopStreaming: () => void;
-  sendMessage: (content: string, contextMessages?: Message[], editedMessageIndex?: number, returnResponse?: boolean) => Promise<{ content: string } | void>;
-  toggleTheme: () => void;
-};
+   sendMessage: (content: string, contextMessages?: Message[], editedMessageIndex?: number, returnResponse?: boolean) => Promise<{ content: string } | void>;
+   toggleTheme: () => void;
+   updateTheme: (template: Template, darkMode: boolean) => void;
+ };
 
 const ChatContext = createContext<ChatContextType>({
   conversations: [],
@@ -49,6 +50,7 @@ const ChatContext = createContext<ChatContextType>({
   stopStreaming: () => {},
   sendMessage: async () => {},
   toggleTheme: () => {},
+  updateTheme: () => {},
 });
 
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
@@ -434,6 +436,17 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
+  const updateTheme = useCallback((template: Template, darkMode: boolean) => {
+    setSettings(prev => {
+      if (darkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      return { ...prev, template, darkMode };
+    });
+  }, []);
+
   const updateSettings = useCallback((partial: Partial<Settings>) => {
     setSettings(prev => ({ ...prev, ...partial }));
   }, []);
@@ -458,6 +471,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     stopStreaming,
     sendMessage,
     toggleTheme,
+    updateTheme,
   }), [
     conversations,
     currentConversationId,
@@ -465,6 +479,9 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     isLoading,
     isStreaming,
     streamController,
+    setSettings,
+    updateSettings,
+    setConversations,
     createNewConversation,
     selectConversation,
     addMessage,
@@ -475,6 +492,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     stopStreaming,
     sendMessage,
     toggleTheme,
+    updateTheme,
   ]);
 
   return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;

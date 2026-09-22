@@ -14,7 +14,7 @@ type AudioRecordButtonProps = {
 export function AudioRecordButton({ className }: AudioRecordButtonProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
-  const { sendMessage, setIsInputDisabled, addMessage, settings } = useChat();
+  const { sendMessage, addMessage, settings } = useChat();
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null);
   const audioPreviewUrlRef = useRef<string | null>(null);
   
@@ -96,7 +96,6 @@ export function AudioRecordButton({ className }: AudioRecordButtonProps) {
         console.log('[Record Debug] Stopping recording');
         // Stop recording
         setIsProcessing(true);
-        setIsInputDisabled(true); // Disable all input during processing
         
         // Get recorded audio
         const audioBlob = await stopRecordingHook();
@@ -115,7 +114,6 @@ export function AudioRecordButton({ className }: AudioRecordButtonProps) {
             duration: 5000
           });
           setIsProcessing(false);
-          setIsInputDisabled(false);
           return;
         }
         
@@ -170,7 +168,6 @@ export function AudioRecordButton({ className }: AudioRecordButtonProps) {
             duration: 5000
           });
           setIsProcessing(false);
-          setIsInputDisabled(false);
           return;
         }
         
@@ -190,7 +187,6 @@ export function AudioRecordButton({ className }: AudioRecordButtonProps) {
               duration: 5000
             });
             setIsProcessing(false);
-            setIsInputDisabled(false);
             return;
           }
           
@@ -201,7 +197,7 @@ export function AudioRecordButton({ className }: AudioRecordButtonProps) {
           });
 
           // Add the assistant's response to the chat
-          addMessage("assistant", apiResponseText);
+          addMessage({ role: 'assistant', content: apiResponseText });
 
           toast({
             title: 'Message sent',
@@ -272,7 +268,6 @@ export function AudioRecordButton({ className }: AudioRecordButtonProps) {
       });
     } finally {
       setIsProcessing(false);
-      setIsInputDisabled(false); // Re-enable input when done
     }
   };
 

@@ -21,8 +21,7 @@ const WebChatAssistant: React.FC = () => {
     createNewConversation, 
     selectConversation,
     settings,
-    toggleWebSearch,
-    toggleAudioResponse
+    updateSettings
   } = useChat();
 
   useEffect(() => {
@@ -73,7 +72,7 @@ const WebChatAssistant: React.FC = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={toggleWebSearch}
+                      onClick={() => updateSettings({ webSearchEnabled: !settings.webSearchEnabled })}
                       aria-label="Toggle web search"
                       className={cn("h-8 w-8", settings.webSearchEnabled ? "text-primary" : "text-muted-foreground hover:text-foreground")}
                     >
@@ -91,7 +90,7 @@ const WebChatAssistant: React.FC = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={toggleAudioResponse}
+                      onClick={() => updateSettings({ audioResponseEnabled: !settings.audioResponseEnabled })}
                       aria-label="Toggle audio responses"
                       className={cn("h-8 w-8", settings.audioResponseEnabled ? "text-primary" : "text-muted-foreground hover:text-foreground")}
                     >
