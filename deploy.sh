@@ -5,7 +5,6 @@ echo "=== CGPT Deployment Script ==="
 
 # 1. Create .env first (needed by docker compose)
 echo "Creating .env file..."
-if [ ! -f .env ]; then
 cat > .env << 'EOF'
 # Server
 PORT=4174
@@ -16,6 +15,7 @@ VITE_BACKEND_SERVICE_PROVIDER=ollama
 VITE_OLLAMA_API_MODEL=llama3.2
 VITE_API_BASE_URL=http://localhost:4174
 VITE_BASE_URL=http://localhost:4173
+CONTAINER_NAME=cgpt_chat
 
 # Ollama (Docker internal networking)
 OLLAMA_API_URL=http://ollama:11434
