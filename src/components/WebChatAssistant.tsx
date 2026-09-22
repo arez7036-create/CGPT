@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Settings, Globe, Volume2, VolumeX } from 'lucide-react';
+import { X, Settings, Globe, Volume2, VolumeX, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/context/ChatContext';
@@ -47,13 +47,13 @@ const WebChatAssistant: React.FC = () => {
   return (
     <>
       {!isOpen && (
-        <Button
-          onClick={toggleChat}
-          className="fixed bottom-6 right-6 z-50 rounded-full w-16 h-16 shadow-lg bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 p-0 flex items-center justify-center border border-border"
-          aria-label="Open chat"
-        >
-          <img src="/mingcute_chat.png" alt="Open Chat" className="w-10 h-10" />
-        </Button>
+          <Button
+            onClick={toggleChat}
+            className="fixed bottom-6 right-6 z-50 rounded-full w-16 h-16 shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 p-0 flex items-center justify-center"
+            aria-label="Open chat"
+          >
+            <MessageCircle className="h-8 w-8" />
+          </Button>
       )}
 
       {isOpen && (
